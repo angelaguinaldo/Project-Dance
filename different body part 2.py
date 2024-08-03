@@ -1,3 +1,9 @@
+'''Created by Divyana Ahuja 
+
+Explaination: the code bellow create circles and using body tracking you need to use your index figer to hit these circles labeled as enmy 
+if the enmy is on the bottom half of the screen it will use the right hand and left hand for the top half of the screen 
+
+file name : index finger position identification game '''
 import cv2
 import mediapipe as mp
 import random

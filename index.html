@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Meta Tags and Title -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Dance</title>
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom Styles -->
+    <style>
+        @font-face {
+            font-family: 'SF Pro';
+            src: url('https://fonts.cdnfonts.com/s/17520/SFProText-Regular.woff') format('woff');
+        }
+
+        /* Color Variables */
+        :root {
+            --button-bg-color: #D1D0F5;
+            --button-hover-bg-color: #B8B5EF;
+            --text-color: #5752C4;
+            --light-purple: #E6E0FF;
+        }
+
+        /* Global Styles */
+        body {
+            margin: 0;
+            font-family: 'SF Pro', sans-serif;
+            background-color: var(--light-purple);
+            color: var(--text-color);
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Dashboard Styles */
+        #dashboard {
+            position: fixed;
+            left: -250px;
+            top: 0;
+            width: 250px;
+            height: 100vh;
+            background-color: #5752C4;
+            transition: all 0.3s ease-in-out;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            z-index: 10;
+            box-shadow: 3px 0px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        #dashboard.open {
+            left: 0;
+        }
+
+        #dashboard h2 {
+            color: #ffffff;
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            font-weight: 700;
+            text-align: center;
+        }
+
+        .control {
+            margin-bottom: 20px;
+            width: 100%;
+        }
+
+        /* Form Label Styles */
+        .form-label {
+            color: #ffffff;
+            font-size: 1rem;
+            margin-top: 5px;
+            text-align: center;
+            font-weight: 400;
+        }
+
+        /* Form and Button Styles */
+        .form-select, .btn-custom, .form-range {
+            color: var(--text-color);
+            background-color: var(--button-bg-color);
+            border: none;
+            border-radius: 10px;
+            padding: 10px;
+            font-size: 1rem;
+            width: 100%;
+            margin-top: 5px;
+            text-align: center;
+        }
+
+        /* Score Display Styles */
+        #score {
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            background-color: var(--button-bg-color);
+            color: var(--text-color);
+            font-size: 1.2rem;
+            font-weight: bold;
+            padding: 10px 15px;
+            border-radius: 10px;
+            text-align: center;
+            z-index: 20;
+        }
+
+        .btn-custom:hover {
+            background-color: var(--button-hover-bg-color);
+        }
+
+        /* Main Content Styles */
+        #main-content {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            height: 100vh;
+            transition: margin-left 0.3s ease-in-out;
+        }
+
+        #main-content.open {
+            margin-left: 250px;
+        }
+
+        #output_canvas {
+            width: 100%;
+            height: 100vh;
+            background-color: var(--light-purple);
+            object-fit: cover;
+        }
+
+        /* Toggle Dashboard Button Styles */
+        #toggle-dashboard {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background-color: var(--button-bg-color);
+            border: none;
+            color: var(--text-color);
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 10px 15px;
+            border-radius: 5px;
+            z-index: 20;
+            transition: background-color 0.3s ease, left 0.3s ease;
+            text-align: center;
+        }
+
+        #toggle-dashboard:hover {
+            background-color: var(--button-hover-bg-color);
+        }
+
+        #toggle-dashboard.open {
+            left: 270px;
+        }
+
+        .control-top-right button {
+            background-color: var(--button-bg-color);
+            color: var(--text-color);
+            border: none;
+            padding: 10px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .control-top-right button:hover {
+            background-color: var(--button-hover-bg-color);
+        }
+
+        .info-button {
+            background-color: var(--button-bg-color);
+            color: var(--text-color);
+            padding: 10px 15px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1rem;
+            text-align: center;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .info-button:hover {
+            background-color: var(--button-hover-bg-color);
+        }
+
+        #footer-logo {
+            width: 150px;
+            height: auto;
+            margin: 0 auto;
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        /* Pause Overlay Styles */
+        #pause-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background-color: rgba(210, 180, 255, 0.8);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            visibility: hidden;
+            color: #fff;
+            font-family: 'SF Pro', sans-serif;
+            text-align: center;
+        }
+
+        #pause-overlay h1 {
+            margin: 0;
+            font-size: 3rem;
+        }
+
+        #pause-overlay h2 {
+            margin: 0;
+            font-size: 1.5rem;
+            margin-top: 20px;
+        }
+
+        /* Dashboard Content Styles */
+        #dashboard-content {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            text-align: center;
+        }
+
+        #dashboard-top {
+            flex: 0 0 auto;
+        }
+
+        #dashboard-bottom {
+            flex: 0 0 auto;
+            margin-top: auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        #dashboard-bottom a {
+            width: 100%;
+        }
+
+        #dashboard-bottom .info-button {
+            margin-bottom: 20px;
+        }
+
+        /* Game Mode Description Styles */
+        #game-mode-description {
+            margin-top: 10px;
+            background-color: var(--button-bg-color);
+            color: var(--text-color);
+            padding: 10px;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            font-weight: 400;
+            text-align: center;
+        }
+
+        /* Application Info Box Styles */
+        #info {
+            background-color: var(--button-bg-color);
+            color: var(--text-color);
+            padding: 10px;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 768px) {
+            /* Adjustments for smaller screens */
+            #dashboard {
+                width: 200px;
+            }
+
+            #dashboard.open {
+                left: 0;
+            }
+
+            #toggle-dashboard.open {
+                left: 220px;
+            }
+
+            #dashboard h2 {
+                font-size: 1.2rem;
+            }
+
+            #score {
+                top: 70px;
+                right: 10px;
+                font-size: 1rem;
+                padding: 8px 12px;
+            }
+
+            #pause-overlay h1 {
+                font-size: 2.5rem;
+            }
+
+            #pause-overlay h2 {
+                font-size: 1.2rem;
+            }
+
+            .control-top-right button {
+                padding: 8px;
+                font-size: 0.9rem;
+            }
+
+            .info-button {
+                padding: 8px 12px;
+                font-size: 0.9rem;
+            }
+
+            #footer-logo {
+                width: 120px;
+            }
+
+            #game-mode-description, #info {
+                font-size: 0.8rem;
+                padding: 8px;
+            }
+
+            #output_canvas {
+                height: calc(100vh - 40px);
+            }
+        }
+
+        @media (max-width: 480px) {
+            #dashboard {
+                width: 180px;
+            }
+
+            #toggle-dashboard.open {
+                left: 200px;
+            }
+
+            #score {
+                top: 60px;
+                right: 5px;
+                font-size: 0.9rem;
+                padding: 6px 10px;
+            }
+
+            #pause-overlay h1 {
+                font-size: 2rem;
+            }
+
+            #pause-overlay h2 {
+                font-size: 1rem;
+            }
+
+            .control-top-right button {
+                padding: 6px;
+                font-size: 0.8rem;
+            }
+
+            .info-button {
+                padding: 6px 10px;
+                font-size: 0.8rem;
+            }
+
+            #footer-logo {
+                width: 100px;
+            }
+
+            #game-mode-description, #info {
+                font-size: 0.7rem;
+                padding: 6px;
+            }
+
+            #output_canvas {
+                height: calc(100vh - 30px);
+            }
+        }
+    </style>
+</head>
+<body>
+<!-- Dashboard Toggle Button -->
+<button id="toggle-dashboard">☰</button>
+
+<!-- Top-right Control Buttons -->
+<div class="control-top-right" style="position:fixed; top:20px; right:20px; display:flex; gap:10px;">
+    <button id="pause-play" class="btn-custom">Pause</button>
+    <button id="mute-unmute" class="btn-custom">Mute</button>
+</div>
+
+<!-- Score Display -->
+<div id="score">0</div>
+
+<!-- Pause Overlay -->
+<div id="pause-overlay">
+    <h1>Paused</h1>
+    <h2>Tap anywhere to play</h2>
+</div>
+
+<!-- Dashboard -->
+<div id="dashboard">
+    <div id="dashboard-content">
+        <!-- Dashboard Top Section -->
+        <div id="dashboard-top">
+            <h2>Project Dance</h2>
+
+            <!-- Application Description -->
+            <div id="info">
+                This application aids individuals with blindness in learning to dance by providing auditory feedback through music and sounds corresponding to their movements.
+            </div>
+
+            <!-- Mode Selector -->
+            <div class="control">
+                <label for="mode" class="form-label">Gamemode</label>
+                <select id="mode" class="form-select">
+                    <option value="game">Hand Tracking</option>
+                    <option value="keyboard">Keyboard Mode</option>
+                    <option value="fullbody">Full Body Tracking</option>
+                    <option value="fingercount">Finger Count Mode</option>
+                </select>
+            </div>
+
+            <!-- Game Mode Description -->
+            <div id="game-mode-description">
+                <!-- The description will be inserted here by JavaScript -->
+            </div>
+        </div>
+
+        <!-- Dashboard Bottom Section -->
+        <div id="dashboard-bottom">
+            <!-- Logo -->
+            <img src="image.png" alt="MATT Logo" id="footer-logo">
+
+            <!-- More Information Button -->
+            <a href="https://www.monatt.org/project-dance" target="_blank">
+                <button class="info-button">For more information, click here</button>
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Main Content -->
+<div id="main-content">
+    <canvas id="output_canvas"></canvas>
+    <video id="video" style="display:none;"></video>
+</div>
+
+<!-- Bootstrap JS and dependencies -->
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
+
+<!-- MediaPipe and Tone.js Scripts -->
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/pose/pose.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.25/Tone.js"></script>
+
+<!-- Main JavaScript File -->
+<script src="main.js"></script>
+</body>
+</html>

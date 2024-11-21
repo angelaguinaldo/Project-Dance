@@ -478,7 +478,7 @@ function handleFullBodyMode(results) {
 // Keyboard Mode - C Major Scale on X and Pitch on Y
 function handleKeyboardMode(results) {
     drawTargetLandmarks();
-    
+
     if (results.multiHandLandmarks && !isPaused) {
         for (const landmarks of results.multiHandLandmarks) {
             const indexTip = landmarks[8];  // The tip of the index finger

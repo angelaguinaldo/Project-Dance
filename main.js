@@ -32,6 +32,35 @@ function initializeEnemyPosition() {
 let x_enemy, y_enemy;
 initializeEnemyPosition();
 
+function initializeTargetLandmarks(){
+    Ax = Math.floor(((1/3)*(canvasElement.width-50))+25);
+    Ay = Math.floor(((1/3)*(canvasElement.height-50))+25);
+    Bx = Math.floor(((2/3)*(canvasElement.width-50))+25);
+    By = Math.floor(((1/3)*(canvasElement.height-50))+25);
+    Cx = Math.floor((canvasElement.width-50)+25);
+    Cy = Math.floor(((1/3)*(canvasElement.height-50))+25);
+
+    Dx = Math.floor(((1/3)*(canvasElement.width-50))+25);
+    Dy = Math.floor(((2/3)*(canvasElement.height-50))+25);
+    Ex = Math.floor(((2/3)*(canvasElement.width-50))+25);
+    Ey = Math.floor(((2/3)*(canvasElement.height-50))+25);
+    Fx = Math.floor((canvasElement.width-50)+25);
+    Fy = Math.floor(((2/3)*(canvasElement.height-50))+25);
+
+    Gx = Math.floor(((1/3)*(canvasElement.width-50))+25);
+    Gy = Math.floor((canvasElement.height-50)+25);
+    Hx = Math.floor(((2/3)*(canvasElement.width-50))+25);
+    Hy = Math.floor((canvasElement.height-50)+25);
+    Ix = Math.floor((canvasElement.width-50)+25);
+    Iy = Math.floor((canvasElement.height-50)+25);
+}
+
+let Ax,Bx,Cx,Dx,Ex,Fx,Gx,Hx,Ix;
+let Ay,By,Cy,Dy,Ey,Fy,Gy,Hy,Iy;
+initializeTargetLandmarks();
+
+const targetArr = [[Ax,Ay],[Bx,By], [Cx,Cy], [Dx,Dy],[Ex,Ey], [Fx,Fy], [Gx,Gy],[Hx,Hy], [Ix,Iy]]
+
 // Variables for active hand selection in hand tracking mode
 let activeHandLabel = null;
 let needToSelectActiveHand = true;
@@ -274,6 +303,19 @@ function drawEnemy() {
     console.log(`Enemy drawn at (${x_enemy}, ${y_enemy})`);
 }
 
+function drawTargetLandmarks(){
+    //draw circle for each target location
+    targetArr.forEach(pos => {
+        canvasCtx.beginPath();
+        canvasCtx.arc(pos[0], pos[1], 25, 0, 2 * Math.PI);
+        canvasCtx.lineWidth = 5;
+        canvasCtx.strokeStyle = 'rgb(0, 200, 0)';
+        canvasCtx.stroke();
+    });
+    
+}
+
+
 // Mediapipe Hands Setup
 const hands = new Hands({
     locateFile: (file) => {
@@ -435,6 +477,8 @@ function handleFullBodyMode(results) {
 
 // Keyboard Mode - C Major Scale on X and Pitch on Y
 function handleKeyboardMode(results) {
+    drawTargetLandmarks();
+    
     if (results.multiHandLandmarks && !isPaused) {
         for (const landmarks of results.multiHandLandmarks) {
             const indexTip = landmarks[8];  // The tip of the index finger

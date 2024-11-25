@@ -33,16 +33,16 @@ let x_enemy, y_enemy;
 initializeEnemyPosition();
 
 function initializeTargetLandmarks(){
-    Ax = Math.floor(((1/3)*(canvasElement.width-50))+25);
-    Ay = Math.floor(((1/3)*(canvasElement.height-50))+25);
-    Bx = Math.floor(((2/3)*(canvasElement.width-50))+25);
-    By = Math.floor(((1/3)*(canvasElement.height-50))+25);
-    Cx = Math.floor((canvasElement.width-50)+25);
-    Cy = Math.floor(((1/3)*(canvasElement.height-50))+25);
+    Ax = Math.floor(0.33*(canvasElement.width)+25);
+    Ay = Math.floor(0.33*(canvasElement.height)+25);
+    Bx = Math.floor(0.67*(canvasElement.width)+25);
+    By = Math.floor(0.33*(canvasElement.height)+25);
+    Cx = Math.floor(canvasElement.width+25);
+    Cy = Math.floor(0.33*(canvasElement.height)+25);
 
-    Dx = Math.floor(((1/3)*(canvasElement.width-50))+25);
-    Dy = Math.floor(((2/3)*(canvasElement.height-50))+25);
-    Ex = Math.floor(((2/3)*(canvasElement.width-50))+25);
+    Dx = Math.floor(0.33*(canvasElement.width)+25);
+    Dy = Math.floor(0.67*(canvasElement.height)+25);
+    Ex = Math.floor(0.67*(canvasElement.width)+25);
     Ey = Math.floor(((2/3)*(canvasElement.height-50))+25);
     Fx = Math.floor((canvasElement.width-50)+25);
     Fy = Math.floor(((2/3)*(canvasElement.height-50))+25);

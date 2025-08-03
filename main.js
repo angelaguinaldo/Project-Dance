@@ -46,7 +46,16 @@ let oscillator = null;
 let gainNode = null;  // We'll use this to control the volume in game mode
 
 // Tone.js setup for keyboard mode
-const synth = new Tone.Synth().toDestination();
+const synth = new Tone.Synth()
+// Create a lowpass filter
+const filter = new Tone.Filter({
+    type: "lowpass",     // or "highpass", "bandpass", etc.
+    frequency: 1000,     // cutoff frequency in Hz
+    Q: 1                 // resonance (higher = more peaky)
+  });
+// Connect synth → filter → speakers
+synth.connect(filter);
+filter.toDestination();
 
 // Load Hit Sounds for Hand and Body Tracking with Fallbacks
 function loadHitSounds() {
@@ -433,8 +442,16 @@ function handleFullBodyMode(results) {
     }
 }
 
+
+
 // Keyboard Mode - C Major Scale on X and Pitch on Y
 function handleKeyboardMode(results) {
+    //if only one hand no muffle-> filter pass everything -> 15000 Hz
+    let frequency =0;
+    if(results.multiHandLandmarks.length<2){
+        frequency = 15000;
+    }
+
     if (results.multiHandLandmarks && !isPaused) {
         for (const landmarks of results.multiHandLandmarks) {
             const indexTip = landmarks[8];  // The tip of the index finger
